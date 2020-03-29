@@ -19,9 +19,10 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         crossorigin="anonymous">
     <style>
+        body { padding: 10px 0; }
         h1 {
             font-size: 1.5rem;
-            margin: 10px 0 20px 0;
+            margin-bottom: 20px;
             text-align: center;
         }
     </style>
@@ -44,6 +45,26 @@
             <li>Page displays best in landscape orientation on phone devices.</li>
         </ul>
         <p>
+            <button
+                class="btn btn-secondary btn-sm"
+                type="button"
+                data-toggle="collapse"
+                data-target="#rawData"
+                aria-expanded="false"
+                aria-controls="rawData">
+              View raw data
+            </button>
+        </p>
+        <div class="collapse" id="rawData">
+            <div class="card bg-light">
+                <div class="card-header">Raw Data</div>
+                <div class="card-body">
+                    <pre id="rawDataContainer"></pre>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <p>
             <small>
                 Created by <a href="https://mccrager.com" target="_blank">Patrick Crager</a>.
                 Open source on <a href="https://github.com/patch-e/coronacharts" target="_blank">github</a>.
@@ -65,6 +86,8 @@
         });
 
         function parseData(data) {
+            document.getElementById('rawDataContainer').innerText = JSON.stringify(data, null, 2);
+
             const dateLabels = [... new Set(data.map(data => data.date))];
             const countyData = [... new Set(data.map(data => data.name))];
             
@@ -151,6 +174,11 @@
         };
     </script>
     
+    <script
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-30089053-1"></script>
     <script>

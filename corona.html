@@ -1,46 +1,81 @@
 <!doctype html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
     <title>PA Counties of Interest - Total COVID-19 Cases By Date</title>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-	<style>
-        canvas {
-            -moz-user-select: none;
-            -webkit-user-select: none;
-            -ms-user-select: none;
+    
+    <script 
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    
+    <link
+        rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+    <style>
+        h1 {
+            font-size: 1.5rem;
+            margin: 10px 0 20px 0;
+            text-align: center;
         }
-	</style>
+    </style>
 </head>
 
 <body>
-    <canvas id="canvas"></canvas>
-    
+    <div class="container-fluid">
+        <h1>PA Counties of Interest - Total COVID-19 Cases By Date (updates daily)</h1>
+        <canvas id="canvas"></canvas>
+        <hr>
+        <p>
+            Data courtesy of the PA Department of Health 
+            <a href="https://www.health.pa.gov/topics/disease/coronavirus/Pages/Cases.aspx" target="_blank">COVID-19 Cases in Pennsylvania</a>
+            resource. The PA Department of Health updates the county statistics around 12pm EST everyday. <mark>This page will automatically update
+            around 1pm EST</mark>.
+        </p>
+        <ul>
+            <li>Colors representing counties are randomized on page load.</li>
+            <li>Tap county labels in the top legend to toggle their display.</li>
+            <li>Page displays best in landscape orientation on phone devices.</li>
+        </ul>
+        <p>
+            <small>
+                Created by <a href="https://mccrager.com" target="_blank">Patrick Crager</a>.
+                Open source on <a href="https://github.com/patch-e/coronacharts" target="_blank">github</a>.
+            </small>
+        </p>
+    </div>
+
 	<script>
-        function getRandomColor() {
-            var letters = '0123456789ABCDEF'.split('');
-            var color = '#';
-            
-            for (var i = 0; i < 6; i++ ) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
+        $(function() {
+            const devMode = false;
+            const url = devMode ? 'http://localhost:4000/nodejs/corona' : '/nodejs/corona'
 
-            return color;
-        };
+            $.get(url, function(data) {
+                const parsedData = parseData(data);
+                const config = createConfig(parsedData.labels, parsedData.datasets);
 
-        $.get('/nodejs/corona', function(data) {
-            const labels = [... new Set(data.map(data => data.date))];
-            const counties = [... new Set(data.map(data => data.name))];
+                activateChart(config);
+            });
+        });
+
+        function parseData(data) {
+            const dateLabels = [... new Set(data.map(data => data.date))];
+            const countyData = [... new Set(data.map(data => data.name))];
             
-            var datasets = [];
-            for (const county of counties) {
+            var countyCases = [];
+            for (const county of countyData) {
                 var result = data.filter(obj => {
                     return obj.name === county;
                 });
-
+                
                 var color = getRandomColor();
-
+                
                 var dataset = {};
                 dataset.backgroundColor = color;
                 dataset.borderColor = color;
@@ -53,10 +88,17 @@
                 }
                 dataset.data = cases;
                 
-                datasets.push(dataset);
+                countyCases.push(dataset);
             };
 
-            var config = {
+            return { 
+                datasets: countyCases,
+                labels: dateLabels
+            };
+        };
+
+        function createConfig(labels, datasets) {
+            return {
 			    type: 'line',
 			    data: {
                     labels: labels,
@@ -64,10 +106,6 @@
                 },
                 options: {
                     responsive: true,
-                    title: {
-                        display: true,
-                        text: 'PA Counties of Interest - Total COVID-19 Cases By Date (updates daily)'
-                    },
                     tooltips: {
                         mode: 'index',
                         intersect: false,
@@ -94,10 +132,23 @@
                     }
                 }
             };
+        };
+        
+        function activateChart(config) {
+            const context = document.getElementById('canvas').getContext('2d');
+			window.lineChart = new Chart(context, config);
+        };
 
-            var ctx = document.getElementById('canvas').getContext('2d');
-			window.lineChart = new Chart(ctx, config);
-        });
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF'.split('');
+            var color = '#';
+            
+            for (var i = 0; i < 6; i++ ) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            
+            return color;
+        };
     </script>
     
     <!-- Global site tag (gtag.js) - Google Analytics -->

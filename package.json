@@ -1,0 +1,14 @@
+{
+  "name": "coronacharts",
+  "version": "1.0.0",
+  "description": "Provides COVID-19 data for PA counties of interest",
+  "main": "corona.js",
+  "author": "Patrick Crager",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "clim": "^1.1.1",
+    "express": "^4.17.1",
+    "mongojs": "^2.6.0",
+    "request": "^2.88.2"
+  }
+}

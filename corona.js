@@ -7,6 +7,7 @@ const express = require('express'),
 
 // app bootstrap
 const app = express();
+const devMode = false;
 
 /*
  * Get PA county of interest corona stats
@@ -14,8 +15,10 @@ const app = express();
  * Params: none
  */
 app.get('/nodejs/corona', function (req, res) {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:5500');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    if (devMode) {
+        res.header('Access-Control-Allow-Origin', 'http://localhost:5500');
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    }
 
     const db = mongojs('corona');
     const collection = db.collection('collection');
@@ -44,7 +47,10 @@ app.get('/nodejs/corona', function (req, res) {
 				error: err
 			});
 		}
-	});
+    });
+
+	// log usage
+	console.log(req.headers['x-forwarded-for'] + '\n' + req.headers['user-agent'] + '\n');
 });
 
 /*
@@ -134,20 +140,17 @@ app.post('/nodejs/corona', function (req, res) {
                         return;
                     }
 
-                    responses.sendSuccess(res, doc, true);
+                    responses.sendSuccess(res, doc, false);
                     // log the persisted stats
                     console.log(doc);
                 });
             });            
         }
     });
-
-	// log usage
-	console.log(req.headers['x-forwarded-for'] + '\n' + req.headers['user-agent'] + '\n');
 });
 
 /*
- * Populate some test data.
+ * Populate the historical data.
  * Action: GET
  * Params: none
  */
@@ -157,95 +160,95 @@ app.get('/nodejs/corona/populate', function (req, res) {
 
     // persist to db
     const results = [
-        {name: 'Adams', cases: 1, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
-        {name: 'Cumberland', cases: 11, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
-        {name: 'Dauphin', cases: 0, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
-        {name: 'Franklin', cases: 0, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
-        {name: 'Lancaster', cases: 2, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
-        {name: 'Lebanon', cases: 1, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
-        {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
-        {name: 'York', cases: 2, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
+        // {name: 'Adams', cases: 1, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
+        // {name: 'Cumberland', cases: 11, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
+        // {name: 'Dauphin', cases: 0, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
+        // {name: 'Franklin', cases: 0, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lancaster', cases: 2, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lebanon', cases: 1, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
+        // {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
+        // {name: 'York', cases: 2, date: utils.formatDate(new Date('03/19/2020'), 'MM/dd/yyyy')},
 
-        {name: 'Adams', cases: 4, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
-        {name: 'Cumberland', cases: 11, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
-        {name: 'Dauphin', cases: 0, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
-        {name: 'Franklin', cases: 1, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
-        {name: 'Lancaster', cases: 2, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
-        {name: 'Lebanon', cases: 1, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
-        {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
-        {name: 'York', cases: 6, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
+        // {name: 'Adams', cases: 4, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
+        // {name: 'Cumberland', cases: 11, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
+        // {name: 'Dauphin', cases: 0, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
+        // {name: 'Franklin', cases: 1, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lancaster', cases: 2, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lebanon', cases: 1, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
+        // {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
+        // {name: 'York', cases: 6, date: utils.formatDate(new Date('03/20/2020'), 'MM/dd/yyyy')},
 
-        {name: 'Adams', cases: 4, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
-        {name: 'Cumberland', cases: 11, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
-        {name: 'Dauphin', cases: 0, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
-        {name: 'Franklin', cases: 1, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
-        {name: 'Lancaster', cases: 4, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
-        {name: 'Lebanon', cases: 2, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
-        {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
-        {name: 'York', cases: 9, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
+        // {name: 'Adams', cases: 4, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
+        // {name: 'Cumberland', cases: 11, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
+        // {name: 'Dauphin', cases: 0, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
+        // {name: 'Franklin', cases: 1, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lancaster', cases: 4, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lebanon', cases: 2, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
+        // {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
+        // {name: 'York', cases: 9, date: utils.formatDate(new Date('03/21/2020'), 'MM/dd/yyyy')},
 
-        {name: 'Adams', cases: 5, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
-        {name: 'Cumberland', cases: 11, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
-        {name: 'Dauphin', cases: 1, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
-        {name: 'Franklin', cases: 1, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
-        {name: 'Lancaster', cases: 5, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
-        {name: 'Lebanon', cases: 3, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
-        {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
-        {name: 'York', cases: 10, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
+        // {name: 'Adams', cases: 5, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
+        // {name: 'Cumberland', cases: 11, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
+        // {name: 'Dauphin', cases: 1, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
+        // {name: 'Franklin', cases: 1, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lancaster', cases: 5, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lebanon', cases: 3, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
+        // {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
+        // {name: 'York', cases: 10, date: utils.formatDate(new Date('03/22/2020'), 'MM/dd/yyyy')},
 
-        {name: 'Adams', cases: 6, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
-        {name: 'Cumberland', cases: 12, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
-        {name: 'Dauphin', cases: 1, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
-        {name: 'Franklin', cases: 1, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
-        {name: 'Lancaster', cases: 5, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
-        {name: 'Lebanon', cases: 3, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
-        {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
-        {name: 'York', cases: 10, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
+        // {name: 'Adams', cases: 6, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
+        // {name: 'Cumberland', cases: 12, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
+        // {name: 'Dauphin', cases: 1, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
+        // {name: 'Franklin', cases: 1, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lancaster', cases: 5, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lebanon', cases: 3, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
+        // {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
+        // {name: 'York', cases: 10, date: utils.formatDate(new Date('03/23/2020'), 'MM/dd/yyyy')},
 
-        {name: 'Adams', cases: 6, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
-        {name: 'Cumberland', cases: 13, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
-        {name: 'Dauphin', cases: 4, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
-        {name: 'Franklin', cases: 3, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
-        {name: 'Lancaster', cases: 10, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
-        {name: 'Lebanon', cases: 3, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
-        {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
-        {name: 'York', cases: 18, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
+        // {name: 'Adams', cases: 6, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
+        // {name: 'Cumberland', cases: 13, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
+        // {name: 'Dauphin', cases: 4, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
+        // {name: 'Franklin', cases: 3, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lancaster', cases: 10, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lebanon', cases: 3, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
+        // {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
+        // {name: 'York', cases: 18, date: utils.formatDate(new Date('03/24/2020'), 'MM/dd/yyyy')},
 
-        {name: 'Adams', cases: 6, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
-        {name: 'Cumberland', cases: 13, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
-        {name: 'Dauphin', cases: 10, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
-        {name: 'Franklin', cases: 5, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
-        {name: 'Lancaster', cases: 12, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
-        {name: 'Lebanon', cases: 3, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
-        {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
-        {name: 'York', cases: 20, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
+        // {name: 'Adams', cases: 6, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
+        // {name: 'Cumberland', cases: 13, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
+        // {name: 'Dauphin', cases: 10, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
+        // {name: 'Franklin', cases: 5, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lancaster', cases: 12, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lebanon', cases: 3, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
+        // {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
+        // {name: 'York', cases: 20, date: utils.formatDate(new Date('03/25/2020'), 'MM/dd/yyyy')},
 
-        {name: 'Adams', cases: 7, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
-        {name: 'Cumberland', cases: 15, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
-        {name: 'Dauphin', cases: 13, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
-        {name: 'Franklin', cases: 5, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
-        {name: 'Lancaster', cases: 21, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
-        {name: 'Lebanon', cases: 4, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
-        {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
-        {name: 'York', cases: 21, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
+        // {name: 'Adams', cases: 7, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
+        // {name: 'Cumberland', cases: 15, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
+        // {name: 'Dauphin', cases: 13, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
+        // {name: 'Franklin', cases: 5, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lancaster', cases: 21, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lebanon', cases: 4, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
+        // {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
+        // {name: 'York', cases: 21, date: utils.formatDate(new Date('03/26/2020'), 'MM/dd/yyyy')},
 
-        {name: 'Adams', cases: 8, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
-        {name: 'Cumberland', cases: 16, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
-        {name: 'Dauphin', cases: 18, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
-        {name: 'Franklin', cases: 5, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
-        {name: 'Lancaster', cases: 33, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
-        {name: 'Lebanon', cases: 12, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
-        {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
-        {name: 'York', cases: 29, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
+        // {name: 'Adams', cases: 8, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
+        // {name: 'Cumberland', cases: 16, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
+        // {name: 'Dauphin', cases: 18, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
+        // {name: 'Franklin', cases: 5, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lancaster', cases: 33, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lebanon', cases: 12, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
+        // {name: 'Perry', cases: 0, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
+        // {name: 'York', cases: 29, date: utils.formatDate(new Date('03/27/2020'), 'MM/dd/yyyy')},
 
-        {name: 'Adams', cases: 8, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')},
-        {name: 'Cumberland', cases: 22, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')},
-        {name: 'Dauphin', cases: 23, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')},
-        {name: 'Franklin', cases: 7, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')},
-        {name: 'Lancaster', cases: 45, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')},
-        {name: 'Lebanon', cases: 15, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')},
-        {name: 'Perry', cases: 1, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')},
-        {name: 'York', cases: 37, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')}
+        // {name: 'Adams', cases: 8, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')},
+        // {name: 'Cumberland', cases: 22, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')},
+        // {name: 'Dauphin', cases: 23, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')},
+        // {name: 'Franklin', cases: 7, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lancaster', cases: 45, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')},
+        // {name: 'Lebanon', cases: 15, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')},
+        // {name: 'Perry', cases: 1, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')},
+        // {name: 'York', cases: 37, date: utils.formatDate(new Date('03/28/2020'), 'MM/dd/yyyy')}
     ];
     console.log(results);
     collection.insert(results, function(err, doc) {
@@ -368,7 +371,10 @@ var utils = {
 };
 
 // app startup
-app.listen(process.env.PORT);
-// app.listen(4000, function () {
-//     console.log('app listening on port 4000!');
-// });
+if (devMode) {
+    app.listen(4000, function () {
+        console.log('app listening on port 4000!');
+    });
+} else {
+    app.listen(process.env.PORT);
+}

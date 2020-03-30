@@ -1,9 +1,9 @@
 // required modules
-const express = require('express'),
-	  request = require('request'),
-	  cheerio = require('cheerio'),
-	  console = require('clim')('corona'),
-      mongojs = require('mongojs');
+const cheerio = require('cheerio');
+const console = require('clim')('corona');
+const express = require('express');
+const mongojs = require('mongojs');
+const request = require('request');
 
 // app bootstrap
 const app = express();

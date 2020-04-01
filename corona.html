@@ -25,19 +25,37 @@
             margin-bottom: 20px;
             text-align: center;
         }
+        .chart-container {
+            margin: 0 auto;
+            position: relative;
+        }
+        @media (orientation: portrait) {
+            .chart-container {
+                height: 45vh;
+                width: 90vw;
+            }
+        }
+        @media (orientation: landscape) {
+            .chart-container {
+                height: 90vh;
+                width: 90vw;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="container-fluid">
         <h1>PA Counties of Interest - Total COVID-19 Cases By Date (updates daily)</h1>
-        <canvas id="canvas"></canvas>
+        <div class="chart-container">
+            <canvas id="canvas"></canvas>
+        </div>
         <hr>
         <p>
             Data courtesy of the PA Department of Health 
             <a href="https://www.health.pa.gov/topics/disease/coronavirus/Pages/Cases.aspx" target="_blank">COVID-19 Cases in Pennsylvania</a>
-            resource. The PA Department of Health updates the county statistics around 12pm EST everyday.<br><mark>This page will automatically update
-            around 1pm EST</mark>.
+            resource. The PA Department of Health updates the county statistics around 12pm EST everyday.<br>
+            <mark>This page will automatically update around 1pm EST.</mark>
         </p>
         <ul>
             <li>Colors representing counties are randomized on page load.</li>
@@ -91,21 +109,21 @@
             const dateLabels = [... new Set(data.map(data => data.date))];
             const countyData = [... new Set(data.map(data => data.name))];
             
-            var countyCases = [];
+            let countyCases = [];
             for (const county of countyData) {
-                var result = data.filter(obj => {
+                let result = data.filter(obj => {
                     return obj.name === county;
                 });
                 
-                var color = getRandomColor();
+                let color = getRandomColor();
                 
-                var dataset = {};
+                let dataset = {};
                 dataset.backgroundColor = color;
                 dataset.borderColor = color;
                 dataset.fill = false;
                 dataset.label = county;
                 dataset.lineTension = 0;
-                var cases = [];
+                let cases = [];
                 for (i = 0; i < result.length; i++) {
                     cases.push(result[i].cases);
                 }
@@ -128,6 +146,7 @@
                     datasets: datasets.reverse()
                 },
                 options: {
+                    maintainAspectRatio: false,
                     responsive: true,
                     tooltips: {
                         mode: 'index',
@@ -163,10 +182,10 @@
         };
 
         function getRandomColor() {
-            var letters = '0123456789ABCDEF'.split('');
-            var color = '#';
+            let letters = '0123456789ABCDEF'.split('');
+            let color = '#';
             
-            for (var i = 0; i < 6; i++ ) {
+            for (let i = 0; i < 6; i++) {
                 color += letters[Math.floor(Math.random() * 16)];
             }
             

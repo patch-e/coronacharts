@@ -41,6 +41,14 @@
                 width: 90vw;
             }
         }
+        @media (prefers-color-scheme: dark) {
+            body {
+                color: #ffffff;
+                background-color: #212529;
+            }
+            .card-header { color: #212529; }
+            hr { border-top-color: rgba(255, 255, 255, 0.1); }
+        }
     </style>
 </head>
 
@@ -140,6 +148,9 @@
         };
 
         function createConfig(labels, datasets) {
+            const prefersDarkMode = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            let gridLinesColor = prefersDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+
             return {
 			    type: 'line',
 			    data: {
@@ -166,6 +177,9 @@
                             scaleLabel: {
                                 display: true,
                                 labelString: 'Date'
+                            },
+                            gridLines: {
+                                color: gridLinesColor
                             }
                         }],
                         yAxes: [{
@@ -173,6 +187,9 @@
                             scaleLabel: {
                                 display: true,
                                 labelString: 'Total Cases'
+                            },
+                            gridLines: {
+                                color: gridLinesColor
                             }
                         }]
                     }

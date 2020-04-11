@@ -125,8 +125,6 @@ function getLogarithmicAxes() {
         display: true,
         type: 'logarithmic',
         ticks: {
-            min: 0,
-            max: 2000,
             callback: function(value) {
                 return value;
             }

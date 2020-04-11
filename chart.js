@@ -1,12 +1,15 @@
 $(function() {
     const devMode = false;
-    const url = devMode ? 'http://localhost:4000/nodejs/corona' : '/nodejs/corona'
+    const url = devMode ? 'http://localhost:4000/nodejs/corona' : '/nodejs/corona';
 
     $.get(url, function(data) {
+        setColorPreference();
+
         const parsedData = parseData(data);
         const config = createConfig(parsedData.labels, parsedData.datasets);
 
         activateChart(config);
+        activateButtons();
     });
 });
 
@@ -46,9 +49,6 @@ function parseData(data) {
 };
 
 function createConfig(labels, datasets) {
-    const prefersDarkMode = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    let gridLinesColor = prefersDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-
     return {
         type: 'line',
         data: {
@@ -77,27 +77,10 @@ function createConfig(labels, datasets) {
                         labelString: 'Date'
                     },
                     gridLines: {
-                        color: gridLinesColor
+                        color: window.gridLinesColor
                     }
                 }],
-                yAxes: [{
-                    display: true,
-                    type: 'logarithmic',
-                    ticks: {
-                        min: 0,
-                        max: 2000,
-                        callback: function(value) {
-                            return value;
-                        }
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Total Cases'
-                    },
-                    gridLines: {
-                        color: gridLinesColor
-                    }
-                }]
+                yAxes: getDefaultAxes()
             }
         }
     };
@@ -106,6 +89,60 @@ function createConfig(labels, datasets) {
 function activateChart(config) {
     const context = document.getElementById('canvas').getContext('2d');
     window.lineChart = new Chart(context, config);
+};
+
+function activateButtons() {
+    $('.dropdown-menu button').on('click', updateCartesian);
+};
+
+function updateCartesian(event) {
+    const type = event.target.id;
+    window.lineChart.options.scales.yAxes = ( type === 'linear' ? getLinearAxes() : getLogarithmicAxes() );
+    window.lineChart.update();
+};
+
+function getDefaultAxes() {
+    return getLogarithmicAxes();
+};
+
+function getLinearAxes() {
+    return [{
+        display: true,
+        type: 'linear',
+        scaleLabel: {
+            display: true,
+            labelString: 'Total Cases'
+        },
+        gridLines: {
+            color: window.gridLinesColor
+        }
+    }];
+};
+
+function getLogarithmicAxes() {
+    return [{
+        display: true,
+        type: 'logarithmic',
+        ticks: {
+            min: 0,
+            max: 2000,
+            callback: function(value) {
+                return value;
+            }
+        },
+        scaleLabel: {
+            display: true,
+            labelString: 'Total Cases'
+        },
+        gridLines: {
+            color: window.gridLinesColor
+        }
+    }];
+};
+
+function setColorPreference() {
+    const prefersDarkMode = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    window.gridLinesColor = prefersDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 };
 
 function getRandomColor() {

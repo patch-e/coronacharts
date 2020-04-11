@@ -22,7 +22,7 @@
         body { padding: 10px 0; }
         h1 {
             font-size: 1.5rem;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             text-align: center;
         }
         .chart-container {
@@ -55,25 +55,49 @@
 <body>
     <div class="container-fluid">
         <h1>PA Counties of Interest - Total COVID-19 Cases By Date (updates daily)</h1>
+        <div class="row">
+            <div class="col text-center">
+                <div class="dropdown">
+                    <button
+                        class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                        type="button"
+                        id="cartesian"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false">Cartesian</button>
+                    <div class="dropdown-menu" aria-labelledby="cartesian">
+                        <button
+                            id="logarithmic"
+                            class="dropdown-item"
+                            type="button">Logarithmic</button>                        
+                        <button
+                            id="linear"
+                            class="dropdown-item"
+                            type="button">Linear</button>
+                    </div>
+                </div>
+            </div>
+        </div>        
         <div class="chart-container">
             <canvas id="canvas"></canvas>
         </div>
         <hr>
+        <p class="text-center"><mark>This page will automatically update around 1pm EST.</mark></p>
         <p>
             Data courtesy of the PA Department of Health 
             <a href="https://www.health.pa.gov/topics/disease/coronavirus/Pages/Cases.aspx" target="_blank">COVID-19 Cases in Pennsylvania</a>
-            resource. The PA Department of Health updates the county statistics around 12pm EST everyday.<br>
-            <mark>This page will automatically update around 1pm EST.</mark>
+            resource. The PA Department of Health updates the county statistics around 12pm EST everyday.
         </p>
         <ul>
             <li>Colors representing counties are randomized on page load.</li>
+            <li>Choose between logarithmic (default) or linear cartesian for y-axis display.</li>
             <li>Interact with county labels in the top legend to toggle their display.</li>
             <li>Interact with lines along the x-axis to see statistical numbers in a tooltip.</li>
             <li>Line chart displays better in landscape orientation on phone devices.</li>
         </ul>
         <p>
             <button
-                class="btn btn-secondary btn-sm"
+                class="btn btn-outline-secondary btn-sm"
                 type="button"
                 data-toggle="collapse"
                 data-target="#rawData"
@@ -82,11 +106,15 @@
               View raw data
             </button>
         </p>
-        <div class="collapse" id="rawData">
-            <div class="card bg-light">
-                <div class="card-header">Raw Data</div>
-                <div class="card-body">
-                    <pre id="rawDataContainer"></pre>
+        <div class="row">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-4">
+                <div class="collapse" id="rawData">
+                    <div class="card bg-light">
+                        <div class="card-header">Raw Data</div>
+                        <div class="card-body">
+                            <pre id="rawDataContainer"></pre>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -101,8 +129,8 @@
     
     <script src="chart.js"></script>
     <script
-        src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
+        integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm"
         crossorigin="anonymous"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->

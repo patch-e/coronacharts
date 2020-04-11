@@ -114,7 +114,8 @@ function getLinearAxes() {
             labelString: 'Total Cases'
         },
         gridLines: {
-            color: window.gridLinesColor
+            color: window.gridLinesColor,
+            zeroLineColor: window.gridLinesColor
         }
     }];
 };
@@ -135,7 +136,8 @@ function getLogarithmicAxes() {
             labelString: 'Total Cases'
         },
         gridLines: {
-            color: window.gridLinesColor
+            color: window.gridLinesColor,
+            zeroLineColor: window.gridLinesColor
         }
     }];
 };

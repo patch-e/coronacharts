@@ -92,7 +92,7 @@ function activateChart(config) {
 };
 
 function activateButtons() {
-    $('.dropdown-menu button').on('click', updateCartesian);
+    $(".btn-group-toggle input:radio").on('change', updateCartesian);
 };
 
 function updateCartesian(event) {

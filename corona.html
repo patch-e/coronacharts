@@ -57,25 +57,14 @@
         <h1>PA Counties of Interest - Total COVID-19 Cases By Date (updates daily)</h1>
         <div class="row">
             <div class="col text-center">
-                <div class="dropdown">
-                    <button
-                        class="btn btn-outline-secondary btn-sm dropdown-toggle"
-                        type="button"
-                        id="cartesian"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false">Cartesian</button>
-                    <div class="dropdown-menu" aria-labelledby="cartesian">
-                        <button
-                            id="logarithmic"
-                            class="dropdown-item"
-                            type="button">Logarithmic</button>                        
-                        <button
-                            id="linear"
-                            class="dropdown-item"
-                            type="button">Linear</button>
-                    </div>
-                </div>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-outline-secondary btn-sm active">
+                        <input type="radio" name="options" id="logarithmic" autocomplete="off" checked> Logarithmic
+                    </label>
+                    <label class="btn btn-outline-secondary btn-sm">
+                        <input type="radio" name="options" id="linear" autocomplete="off"> Linear
+                    </label>
+                  </div>                
             </div>
         </div>        
         <div class="chart-container">

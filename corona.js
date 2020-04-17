@@ -92,10 +92,10 @@ app.post('/nodejs/corona', function (req, res) {
                 if (!error && response.statusCode === 200) {
                     const $ = cheerio.load(html);
                     
+                    // Department of Health page DOM is a mess, not a great way to identify the table.
+                    // It was previously the last table in the #page element, it no longer is. 
+                    // Keying on the specific table index now, likely to break again as they tweak.
                     $('#page table').each(function(tableIndex, table) {
-                        // Department of Health page DOM is a mess, not a great way to identify the table.
-                        // It was previously the last table in the #page element, it no longer is. 
-                        // Keying on it's specific index now, likely to break again as they tweak.
                         if (tableIndex !== 3) {
                             return;
                         }

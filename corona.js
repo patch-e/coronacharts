@@ -92,7 +92,13 @@ app.post('/nodejs/corona', function (req, res) {
                 if (!error && response.statusCode === 200) {
                     const $ = cheerio.load(html);
                     
-                    $('#page table:last-of-type').each(function(tableIndex, table) {
+                    $('#page table').each(function(tableIndex, table) {
+                        // Department of Health page DOM is a mess, not a great way to identify the table.
+                        // It was previously the last table in the #page element, it no longer is. 
+                        // Keying on it's specific index now, likely to break again as they tweak.
+                        if (tableIndex !== 3) {
+                            return;
+                        }
                         const $table = $(table);
 
                         $table.find('tbody > tr').each(function(rowIndex, row) {
@@ -105,8 +111,10 @@ app.post('/nodejs/corona', function (req, res) {
                                 var cellValue = utils.trim($cell.text());
                                 
                                 if (countiesOfInterest.indexOf(cellValue) > -1) {
-                                    countyStats = { date: utils.today('MM/dd/yyyy') };
-                                    countyStats.name = cellValue;
+                                    countyStats = { 
+                                        date: utils.today('MM/dd/yyyy'),
+                                        name: cellValue
+                                    };
                                     countyFound = true;
 
                                 } else if (countyFound) {

@@ -96,7 +96,7 @@ app.post('/nodejs/corona', function (req, res) {
                     // It was previously the last table in the #page element, it no longer is. 
                     // Keying on the specific table index now, likely to break again as they tweak.
                     $('#page table').each(function(tableIndex, table) {
-                        if (tableIndex !== 4) {
+                        if (tableIndex !== 3) {
                             return;
                         }
                         const $table = $(table);
